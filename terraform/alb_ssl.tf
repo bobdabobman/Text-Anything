@@ -1,12 +1,3 @@
-resource "aws_acm_certificate" "cert" {
-  domain_name       = var.domain_name
-  validation_method = "DNS"
-
-  tags = {
-    Name = "MyAppCert"
-  }
-}
-
 resource "aws_lb_listener" "https" {
   load_balancer_arn = aws_lb.alb.arn
   port              = "443"
