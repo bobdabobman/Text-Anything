@@ -4,8 +4,8 @@ pipeline {
     environment {
         AWS_DEFAULT_REGION          = 'us-east-1'
         ECR_REPO_URI                = '354923279633.dkr.ecr.us-east-1.amazonaws.com/hello-world-repo'
-        TWILIO_AUTH_TOKEN           = credentials('twilio-auth-token')
-        TWILIO_ACCOUNT_SID          = credentials('twilio-account-sid')
+        twilio_auth_token           = credentials('twilio-auth-token')
+        twilio_account_sid          = credentials('twilio-account-sid')
         APPLICATION_URL             = 'http://text18449410220anything.com'
         ECS_CLUSTER_NAME            = 'hello-world-cluster'
         ECS_SERVICE_NAME            = 'hello-world-service'
@@ -57,8 +57,12 @@ pipeline {
         stage('Terraform Init and Apply') {
             steps {
                 dir('terraform') {
-                    sh 'terraform init'
-                    sh 'terraform apply -auto-approve'
+                     sh '''
+                        terraform init
+                        terraform apply -auto-approve \
+                            -var="twilio_auth_token=${twilio_auth_token}" \
+                            -var="twilio_account_sid=${twilio_account_sid}"
+                        '''
                 }
             }
         }
@@ -89,12 +93,12 @@ pipeline {
                                     ],
                                     "environment": [
                                         {
-                                            "name": "TWILIO_AUTH_TOKEN",
-                                            "value": "${TWILIO_AUTH_TOKEN}"
+                                            "name": "twilio_auth_token",
+                                            "value": "${twilio_auth_token}"
                                         },
                                         {
-                                            "name": "TWILIO_ACCOUNT_SID",
-                                            "value": "${TWILIO_ACCOUNT_SID}"
+                                            "name": "twilio_account_sid",
+                                            "value": "${twilio_account_sid}"
                                         }
                                     ],
                                     "logConfiguration": {

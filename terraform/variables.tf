@@ -21,6 +21,7 @@ variable "twilio_account_sid" {
 variable "twilio_phone_number" {
   description = "Twilio phone number"
   type        = string
+  default     = 18449410220
 }
 
 variable "desired_count" {
