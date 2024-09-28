@@ -21,14 +21,18 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 script {
+                    echo "Building Docker Image: ${ECR_REPO_URI}:${env.BUILD_NUMBER}"
                     dockerImage = docker.build("${ECR_REPO_URI}:${env.BUILD_NUMBER}")
+                    echo "Docker Image built successfully."
                 }
             }
         }
         stage('Push to ECR') {
             steps {
                 script {
+                    echo "Logging in to ECR..."
                     sh '$(aws ecr get-login --no-include-email --region us-east-1)'
+                    echo "Pushing Docker Image: ${ECR_REPO_URI}:${env.BUILD_NUMBER}"
                     dockerImage.push()
                 }
             }
