@@ -3,13 +3,13 @@ pipeline {
 
     environment {
         AWS_DEFAULT_REGION          = 'us-east-1'
-        ECR_REPO_URI                = 'account-id.dkr.ecr.us-east-1.amazonaws.com/hello-world-repo'
+        ECR_REPO_URI                = '354923279633.dkr.ecr.us-east-1.amazonaws.com/hello-world-repo'
         TWILIO_AUTH_TOKEN           = credentials('twilio-auth-token')
         TWILIO_ACCOUNT_SID          = credentials('twilio-account-sid')
-        APPLICATION_URL             = 'http://text18449410220anything.com'  // Replace with your actual application URL
+        APPLICATION_URL             = 'http://text18449410220anything.com'
         ECS_CLUSTER_NAME            = 'hello-world-cluster'
         ECS_SERVICE_NAME            = 'hello-world-service'
-        ECS_TASK_EXECUTION_ROLE_ARN = 'arn:aws:iam::your-account-id:role/ecsTaskExecutionRole'  // Replace with actual ARN
+        ECS_TASK_EXECUTION_ROLE_ARN = 'arn:aws:iam::354923279633:role/jenkins-server-instance-role'
     }
 
     stages {
