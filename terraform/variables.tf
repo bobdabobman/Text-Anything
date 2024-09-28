@@ -11,11 +11,13 @@ variable "project_name" {
 variable "twilio_auth_token" {
   description = "Twilio Auth Token"
   type        = string
+  sensitive = true
 }
 
 variable "twilio_account_sid" {
   description = "Twilio Account SID"
   type        = string
+  sensitive   = true
 }
 
 variable "twilio_phone_number" {
