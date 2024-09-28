@@ -40,7 +40,7 @@ pipeline {
                 script {
                     echo "Logging in to ECR..."
                     sh '''
-                    aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin account-id.dkr.ecr.us-east-1.amazonaws.com
+                    aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 354923279633.dkr.ecr.us-east-1.amazonaws.com
                     '''
                     echo "Pushing Docker Image: ${ECR_REPO_URI}:${env.BUILD_NUMBER}"
                     sh """
