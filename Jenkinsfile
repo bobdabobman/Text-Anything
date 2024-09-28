@@ -23,7 +23,9 @@ pipeline {
                 script {
                     echo "Building Docker Image: ${ECR_REPO_URI}:${env.BUILD_NUMBER}"
                     try {
-                        dockerImage = docker.build("${ECR_REPO_URI}:${env.BUILD_NUMBER}")
+                        sh """
+                        docker build -t ${ECR_REPO_URI}:${env.BUILD_NUMBER} .
+                        """
                         echo "Docker Image built successfully."
                     } catch (Exception e) {
                         echo "Docker build failed: ${e}"
@@ -39,7 +41,9 @@ pipeline {
                     echo "Logging in to ECR..."
                     sh '$(aws ecr get-login --no-include-email --region us-east-1)'
                     echo "Pushing Docker Image: ${ECR_REPO_URI}:${env.BUILD_NUMBER}"
-                    dockerImage.push()
+                    sh """
+                    docker push ${ECR_REPO_URI}:${env.BUILD_NUMBER}
+                    """
                 }
             }
         }
