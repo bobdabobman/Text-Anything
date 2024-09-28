@@ -168,10 +168,7 @@ pipeline {
 
     post {
         always {
-            agent any
-            steps {
-                cleanWs()
-            }
+            cleanWs()
         }
     }
 }
