@@ -22,8 +22,14 @@ pipeline {
             steps {
                 script {
                     echo "Building Docker Image: ${ECR_REPO_URI}:${env.BUILD_NUMBER}"
-                    dockerImage = docker.build("${ECR_REPO_URI}:${env.BUILD_NUMBER}")
-                    echo "Docker Image built successfully."
+                    try {
+                        dockerImage = docker.build("${ECR_REPO_URI}:${env.BUILD_NUMBER}")
+                        echo "Docker Image built successfully."
+                    } catch (Exception e) {
+                        echo "Docker build failed: ${e}"
+                        currentBuild.result = 'FAILURE'
+                        throw e
+                    }
                 }
             }
         }
