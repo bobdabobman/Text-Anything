@@ -1,5 +1,6 @@
 import os
 import logging
+from urllib.parse import quote  # Using Python's standard library for URL quoting
 from flask import Flask, request, abort, jsonify, render_template
 from twilio.twiml.messaging_response import MessagingResponse
 from twilio.request_validator import RequestValidator
