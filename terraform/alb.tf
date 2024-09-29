@@ -1,3 +1,5 @@
+# Sets up a load balancer for us to use which spans two zones
+# Zones specified in vpc.tf
 resource "aws_lb" "alb" {
   name               = "${var.project_name}-alb"
   load_balancer_type = "application"
@@ -10,14 +12,18 @@ resource "aws_lb" "alb" {
   }
 }
 
+
+# Points the load balancer to a set of servers
+# Group is selected through the target resources themselves
+# See ecs_service.tf
 resource "aws_lb_target_group" "app_tg" {
   name        = "${var.project_name}-tg"
-  port        = 5000
+  port        = 5000 # the port we will recieve traffic
   protocol    = "HTTP"
   target_type = "ip"
   vpc_id      = aws_vpc.main.id
 
-  health_check {
+  health_check { # check health of targets
     path                = "/"
     matcher             = "200-399"
     interval            = 30

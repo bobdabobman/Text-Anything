@@ -1,6 +1,6 @@
 import os
 import logging
-from flask import Flask, request, abort
+from flask import Flask, request, abort, jsonify, render_template
 from twilio.twiml.messaging_response import MessagingResponse
 from twilio.request_validator import RequestValidator
 
@@ -37,14 +37,14 @@ def sms_reply():
     return str(resp)
 
 @app.route('/')
-def hello_world():
-    html = '<h1>hello world</h1>'
-    if messages:
-        html += '<h2>Received Messages:</h2><ul>'
-        for msg in messages:
-            html += f'<li>{msg}</li>'
-        html += '</ul>'
-    return html
+def home():
+    # Render the page where we'll load messages asynchronously
+    return render_template('index.html')
+
+@app.route('/get_messages', methods=['GET'])
+def get_messages():
+    # Return the list of messages as JSON
+    return jsonify(messages)
 
 if __name__ == '__main__':
     # Use a production-ready server (e.g., Gunicorn) in production environments

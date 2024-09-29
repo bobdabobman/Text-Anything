@@ -1,3 +1,4 @@
+# Create https load balancer
 resource "aws_lb_listener" "https" {
   load_balancer_arn = aws_lb.alb.arn
   port              = "443"
@@ -11,7 +12,7 @@ resource "aws_lb_listener" "https" {
   }
 }
 
-# Optional: Redirect HTTP to HTTPS
+# Redirect HTTP to HTTPS
 resource "aws_lb_listener" "http" {
   load_balancer_arn = aws_lb.alb.arn
   port              = "80"
