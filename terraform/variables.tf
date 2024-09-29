@@ -33,7 +33,7 @@ variable "desired_count" {
 
 variable "domain_name" {
   description = "The domain name for the application"
-  default     = "text18449410220anything-cyware.com"
+  default     = "text18449410220anything-zwinger.org"
 }
 
 variable "log_retention_in_days" {
