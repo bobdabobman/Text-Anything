@@ -5,7 +5,7 @@ variable "aws_region" {
 
 variable "project_name" {
   description = "Name prefix for all resources"
-  default     = "hello-world-app"
+  default     = "hello-world"
 }
 
 variable "twilio_auth_token" {
