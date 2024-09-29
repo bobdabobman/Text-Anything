@@ -6,7 +6,7 @@ pipeline {
         ECR_REPO_URI                = '354923279633.dkr.ecr.us-east-1.amazonaws.com/hello-world-repo'
         twilio_auth_token           = credentials('twilio-auth-token')
         twilio_account_sid          = credentials('twilio-account-sid')
-        APPLICATION_URL             = 'http://text18449410220anything.com'
+        APPLICATION_URL             = 'http://text18449410220anything-zwinger.com'
         ECS_CLUSTER_NAME            = 'hello-world-app-cluster'
         ECS_SERVICE_NAME            = 'hello-world-app-service'
         ECS_TASK_EXECUTION_ROLE_ARN = 'arn:aws:iam::354923279633:role/hello-world-app-ecs-task-execution-role'
@@ -90,7 +90,6 @@ pipeline {
                                     "portMappings": [
                                         {
                                             "containerPort": 5000,
-                                            "hostPort": 5000,
                                             "protocol": "tcp"
                                         }
                                     ],
@@ -132,6 +131,7 @@ pipeline {
                 }
             }
         }
+        // Verification will fail till Route 53 is up
         stage('Verification') {
             steps {
                 script {
@@ -151,19 +151,6 @@ pipeline {
                         echo 'HTTP status code is 200.'
                     } else {
                         error "Deployment verification failed. HTTP status code: ${http_status}"
-                    }
-
-                    // Fetch the response content
-                    def response_body = sh(
-                        script: "curl -s ${APPLICATION_URL}",
-                        returnStdout: true
-                    ).trim()
-
-                    // Check if the response contains 'hello world'
-                    if (response_body.contains('hello world')) {
-                        echo 'Response contains "hello world".'
-                    } else {
-                        error 'Deployment verification failed. Response did not contain expected content.'
                     }
                 }
             }

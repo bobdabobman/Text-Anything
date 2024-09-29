@@ -6,6 +6,8 @@ If you haven't already, create an account and get a phone number from twilio. Sp
 
 This code automatically deploys when merged or pushed to main when using the Jenkins server set up in the other repository: jenkins. Follow the steps to set up the Jenkins server and then code naturally.
 
+Note: Verification is expected to fail in the pipeline till Route 53 DNS is set up.
+
 
 ### To the reviewers:
 I heavily abused code generation tools to get this up rapidly. However, I went through and left comments sized by how much I would need to know to come back to this in a week and understand it. Almost consider them notes. I learned a decent amount about aws with this exercise. Especially when it comes to Route 53 which still has my certificates pending at the time I write this. I truly enjoyed this activity and now I have a great personal project (that isn't in a private repo for the fun side thing me and a friend do) to showcase my skills with Terraform, Ansible, and Jenkins. I really appreciate the inspiration. 
