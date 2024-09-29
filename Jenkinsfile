@@ -95,7 +95,7 @@ pipeline {
                                         {
                                             "name": "twilio_auth_token",
                                             "value": "${twilio_auth_token}"
-                                        },
+                                        }
                                     ],
                                     "logConfiguration": {
                                         "logDriver": "awslogs",
