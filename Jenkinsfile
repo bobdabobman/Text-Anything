@@ -10,6 +10,7 @@ pipeline {
         ECS_CLUSTER_NAME            = 'hello-world-app-cluster'
         ECS_SERVICE_NAME            = 'hello-world-app-service'
         ECS_TASK_EXECUTION_ROLE_ARN = 'arn:aws:iam::354923279633:role/hello-world-app-ecs-task-execution-role'
+        ECS_TASK_ROLE_ARN           = 'arn:aws:iam::354923279633:role/hello-world-app-task-role'
     }
 
     stages {
@@ -66,82 +67,70 @@ pipeline {
                 }
             }
         }
-        
+
         stage('Deploy to ECS') {
             steps {
                 script {
-                    // Force new deployment using the latest task definition
+                    // Register a new task definition with the new image
+                    def taskDefinition = sh(
+                        script: """
+                        aws ecs register-task-definition \
+                            --family hello-world-task \
+                            --task-role-arn ${ECS_TASK_ROLE_ARN}
+                            --execution-role-arn ${ECS_TASK_EXECUTION_ROLE_ARN} \
+                            --network-mode awsvpc \
+                            --requires-compatibilities FARGATE \
+                            --cpu "256" \
+                            --memory "512" \
+                            --container-definitions '[
+                                {
+                                    "name": "app",
+                                    "image": "${ECR_REPO_URI}:${env.BUILD_NUMBER}",
+                                    "essential": true,
+                                    "portMappings": [
+                                        {
+                                            "containerPort": 5000,
+                                            "hostPort": 5000,
+                                            "protocol": "tcp"
+                                        }
+                                    ],
+                                    "environment": [
+                                        {
+                                            "name": "twilio_auth_token",
+                                            "value": "${twilio_auth_token}"
+                                        },
+                                        {
+                                            "name": "twilio_account_sid",
+                                            "value": "${twilio_account_sid}"
+                                        }
+                                    ],
+                                    "logConfiguration": {
+                                        "logDriver": "awslogs",
+                                        "options": {
+                                            "awslogs-group": "/ecs/hello-world-app",
+                                            "awslogs-region": "${AWS_DEFAULT_REGION}",
+                                            "awslogs-stream-prefix": "ecs"
+                                        }
+                                    }
+                                }
+                            ]'
+                        """,
+                        returnStdout: true
+                    ).trim()
+                    
+                    // Extract task definition ARN
+                    def taskDefArn = readJSON(text: taskDefinition).taskDefinition.taskDefinitionArn
+
+                    // Update ECS service to use the new task definition
                     sh """
-                    aws ecs update-service --cluster ${ECS_CLUSTER_NAME} \
-                    --service ${ECS_SERVICE_NAME} \
-                    --force-new-deployment
+                    aws ecs update-service \
+                        --cluster ${ECS_CLUSTER_NAME} \
+                        --service ${ECS_SERVICE_NAME} \
+                        --task-definition ${taskDefArn}
                     """
                 }
             }
         }
-
-        // stage('Deploy to ECS') {
-        //     steps {
-        //         script {
-        //             // Register a new task definition with the new image
-        //             def taskDefinition = sh(
-        //                 script: """
-        //                 aws ecs register-task-definition \
-        //                     --family hello-world-task \
-        //                     --execution-role-arn ${ECS_TASK_EXECUTION_ROLE_ARN} \
-        //                     --network-mode awsvpc \
-        //                     --requires-compatibilities FARGATE \
-        //                     --cpu "256" \
-        //                     --memory "512" \
-        //                     --container-definitions '[
-        //                         {
-        //                             "name": "app",
-        //                             "image": "${ECR_REPO_URI}:${env.BUILD_NUMBER}",
-        //                             "essential": true,
-        //                             "portMappings": [
-        //                                 {
-        //                                     "containerPort": 5000,
-        //                                     "hostPort": 5000,
-        //                                     "protocol": "tcp"
-        //                                 }
-        //                             ],
-        //                             "environment": [
-        //                                 {
-        //                                     "name": "twilio_auth_token",
-        //                                     "value": "${twilio_auth_token}"
-        //                                 },
-        //                                 {
-        //                                     "name": "twilio_account_sid",
-        //                                     "value": "${twilio_account_sid}"
-        //                                 }
-        //                             ],
-        //                             "logConfiguration": {
-        //                                 "logDriver": "awslogs",
-        //                                 "options": {
-        //                                     "awslogs-group": "/ecs/hello-world-app",
-        //                                     "awslogs-region": "${AWS_DEFAULT_REGION}",
-        //                                     "awslogs-stream-prefix": "ecs"
-        //                                 }
-        //                             }
-        //                         }
-        //                     ]'
-        //                 """,
-        //                 returnStdout: true
-        //             ).trim()
-                    
-        //             // Extract task definition ARN
-        //             def taskDefArn = readJSON(text: taskDefinition).taskDefinition.taskDefinitionArn
-
-        //             // Update ECS service to use the new task definition
-        //             sh """
-        //             aws ecs update-service \
-        //                 --cluster ${ECS_CLUSTER_NAME} \
-        //                 --service ${ECS_SERVICE_NAME} \
-        //                 --task-definition ${taskDefArn}
-        //             """
-        //         }
-        //     }
-        // }
         stage('Verification') {
             steps {
                 script {
