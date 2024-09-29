@@ -21,23 +21,27 @@ data "aws_availability_zones" "available" {
 }
 
 variable "subnet_configs" {
-  type = map(any)
+  type = map(object({
+    az   = string
+    cidr = string
+  }))
   default = {
-    "subnet-1" = { az = "us-east-1a", cidr = "10.0.1.0/24" }
-    "subnet-2" = { az = "us-east-1b", cidr = "10.0.2.0/24" }
+    "public-subnet-1" = { az = "us-east-1a", cidr = "10.0.1.0/24" }
+    "public-subnet-2" = { az = "us-east-1b", cidr = "10.0.2.0/24" }
   }
 }
 
-resource "aws_subnet" "public_subnets" {
+
+resource "aws_subnet" "public" {
   for_each = var.subnet_configs
 
   vpc_id            = aws_vpc.main.id
-  cidr_block        = each.value["cidr"]
-  availability_zone = each.value["az"]
+  cidr_block        = each.value.cidr
+  availability_zone = each.value.az
   map_public_ip_on_launch = true
 
   tags = {
-    Name = "${each.key}-public"
+    Name = each.key
   }
 }
 
@@ -56,7 +60,7 @@ resource "aws_route" "public_internet_access" {
 }
 
 resource "aws_route_table_association" "public_subnets" {
-  for_each      = { for subnet in aws_subnet.public_subnets : subnet.id => subnet }
+  for_each      = aws_subnet.public
   subnet_id     = each.value.id
   route_table_id = aws_route_table.public.id
 }

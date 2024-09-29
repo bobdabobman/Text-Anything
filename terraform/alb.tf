@@ -1,7 +1,7 @@
 resource "aws_lb" "alb" {
   name               = "${var.project_name}-alb"
   load_balancer_type = "application"
-  subnets            = values(aws_subnet.public_subnets)[*].id
+  subnets            = [for subnet in aws_subnet.public : subnet.id]
 
   security_groups    = [aws_security_group.alb_sg.id]
 
