@@ -7,7 +7,8 @@ resource "aws_iam_service_linked_role" "ecs" {
 resource "aws_ecs_service" "service" {
   name            = "${var.project_name}-service"
   cluster         = aws_ecs_cluster.cluster.id
-  task_definition = aws_ecs_task_definition.task.arn
+  # Set up task definition in Jenkins file
+  #task_definition = aws_ecs_task_definition.task.arn
   launch_type     = "FARGATE"
   desired_count   = var.desired_count
 
