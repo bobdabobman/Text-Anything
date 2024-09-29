@@ -41,66 +41,66 @@ variable "log_retention_in_days" {
   default     = 5
 }
 
-variable "contact_first_name" {
-  description = "The contact's first name"
-  type        = string
-  default     = "Thomas"
-  sensitive   = true
-}
+# variable "contact_first_name" {
+#   description = "The contact's first name"
+#   type        = string
+#   default     = "Thomas"
+#   sensitive   = true
+# }
 
-variable "contact_last_name" {
-  description = "The contact's last name"
-  type        = string
-  default     = "Zwinger"
-  sensitive   = true
-}
+# variable "contact_last_name" {
+#   description = "The contact's last name"
+#   type        = string
+#   default     = "Zwinger"
+#   sensitive   = true
+# }
 
-variable "contact_address" {
-  description = "The contact's address"
-  type        = string
-  default     = "405 Main St, Apt 303"
-  sensitive   = true
-}
+# variable "contact_address" {
+#   description = "The contact's address"
+#   type        = string
+#   default     = "405 Main St, Apt 303"
+#   sensitive   = true
+# }
 
-variable "contact_city" {
-  description = "The contact's city"
-  type        = string
-  default     = "Red Wing"
-  sensitive   = true
-}
+# variable "contact_city" {
+#   description = "The contact's city"
+#   type        = string
+#   default     = "Red Wing"
+#   sensitive   = true
+# }
 
-variable "contact_state" {
-  description = "The contact's state"
-  type        = string
-  default     = "MN"
-  sensitive   = true
-}
+# variable "contact_state" {
+#   description = "The contact's state"
+#   type        = string
+#   default     = "MN"
+#   sensitive   = true
+# }
 
-variable "contact_country" {
-  description = "The contact's country code"
-  type        = string
-  default     = "US"
-  sensitive   = true
-}
+# variable "contact_country" {
+#   description = "The contact's country code"
+#   type        = string
+#   default     = "US"
+#   sensitive   = true
+# }
 
-variable "contact_zip" {
-  description = "The contact's ZIP code"
-  type        = string
-  default     = "55066"
-  sensitive   = true
-}
+# variable "contact_zip" {
+#   description = "The contact's ZIP code"
+#   type        = string
+#   default     = "55066"
+#   sensitive   = true
+# }
 
-variable "contact_phone" {
-  description = "The contact's phone number"
-  type        = string
-  default     = "+19526864444"
-  sensitive   = true
-}
+# variable "contact_phone" {
+#   description = "The contact's phone number"
+#   type        = string
+#   default     = "+19526864444"
+#   sensitive   = true
+# }
 
-variable "contact_email" {
-  description = "The contact's email"
-  type        = string
-  default     = "zwingthomas@gmail.com"
-  sensitive   = true
-}
+# variable "contact_email" {
+#   description = "The contact's email"
+#   type        = string
+#   default     = "zwingthomas@gmail.com"
+#   sensitive   = true
+# }
 
