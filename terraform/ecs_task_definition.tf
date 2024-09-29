@@ -25,10 +25,6 @@ resource "aws_ecs_task_definition" "task" {
         {
           name  = "TWILIO_AUTH_TOKEN"
           value = var.twilio_auth_token
-        },
-        {
-          name  = "TWILIO_PHONE_NUMBER"
-          value = var.twilio_phone_number
         }
       ]
       logConfiguration = {

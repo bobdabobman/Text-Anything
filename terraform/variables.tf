@@ -14,12 +14,6 @@ variable "twilio_auth_token" {
   sensitive = true
 }
 
-variable "twilio_account_sid" {
-  description = "Twilio Account SID"
-  type        = string
-  sensitive   = true
-}
-
 variable "twilio_phone_number" {
   description = "Twilio phone number"
   type        = string
