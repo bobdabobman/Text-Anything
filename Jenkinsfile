@@ -76,7 +76,7 @@ pipeline {
                         script: """
                         aws ecs register-task-definition \
                             --family hello-world-task \
-                            --task-role-arn ${ECS_TASK_ROLE_ARN}
+                            --task-role-arn ${ECS_TASK_ROLE_ARN} \
                             --execution-role-arn ${ECS_TASK_EXECUTION_ROLE_ARN} \
                             --network-mode awsvpc \
                             --requires-compatibilities FARGATE \
