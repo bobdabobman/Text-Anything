@@ -23,7 +23,7 @@ resource "aws_ecs_service" "service" {
     container_port   = 5000
   }
 
-  # depends_on = [aws_lb_listener.http]
+  depends_on = [aws_lb_listener.http]
 
   tags = {
     Name = "${var.project_name}-ecs-service"

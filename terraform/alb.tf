@@ -12,6 +12,19 @@ resource "aws_lb" "alb" {
   }
 }
 
+# Create a listener for the load balancer
+resource "aws_lb_listener" "http" {
+  load_balancer_arn = aws_lb.alb.arn
+  port              = "5000"
+  protocol          = "HTTP"
+
+  default_action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.app_tg.arn
+  }
+}
+
+
 
 # Points the load balancer to a set of servers
 # Group is selected through the target resources themselves
