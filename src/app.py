@@ -14,7 +14,7 @@ logger = logging.getLogger(__name__)
 messages = []
 
 # Twilio credentials
-TWILIO_AUTH_TOKEN = os.environ.get('TWILIO_AUTH_TOKEN')
+TWILIO_AUTH_TOKEN = os.environ.get('twilio_auth_token')
 
 @app.route('/sms', methods=['POST'])
 def sms_reply():

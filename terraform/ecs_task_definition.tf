@@ -27,10 +27,6 @@ resource "aws_ecs_task_definition" "task" {
           value = var.twilio_auth_token
         },
         {
-          name  = "TWILIO_ACCOUNT_SID"
-          value = var.twilio_account_sid
-        },
-        {
           name  = "TWILIO_PHONE_NUMBER"
           value = var.twilio_phone_number
         }
