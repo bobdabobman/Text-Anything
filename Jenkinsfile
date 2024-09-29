@@ -9,7 +9,7 @@ pipeline {
         APPLICATION_URL             = 'http://text18449410220anything.com'
         ECS_CLUSTER_NAME            = 'hello-world-app-cluster'
         ECS_SERVICE_NAME            = 'hello-world-app-service'
-        ECS_TASK_EXECUTION_ROLE_ARN = 'arn:aws:iam::354923279633:role/jenkins-server-instance-role'
+        ECS_TASK_EXECUTION_ROLE_ARN = 'arn:aws:iam::354923279633:role/ecs_task_execution_role'
     }
 
     stages {
