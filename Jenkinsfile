@@ -126,7 +126,8 @@ pipeline {
                     aws ecs update-service \
                         --cluster ${ECS_CLUSTER_NAME} \
                         --service ${ECS_SERVICE_NAME} \
-                        --task-definition ${taskDefArn}
+                        --task-definition ${taskDefArn} \
+                        --force-new-deployment
                     """
                 }
             }
