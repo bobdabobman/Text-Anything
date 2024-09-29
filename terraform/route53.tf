@@ -1,3 +1,50 @@
+resource "aws_route53_domain" "my_domain" {
+  domain_name = var.domain_name
+  tags = {
+    Name = var.domain_name
+  }
+
+  admin_contact {
+    first_name   = var.contact_first_name
+    last_name    = var.contact_last_name
+    contact_type = "PERSON"
+    address_line_1 = var.contact_address
+    city         = var.contact_city
+    state        = var.contact_state
+    country_code = var.contact_country
+    zip_code     = var.contact_zip
+    phone_number = var.contact_phone
+    email        = var.contact_email
+  }
+
+  registrant_contact {
+    first_name   = var.contact_first_name
+    last_name    = var.contact_last_name
+    contact_type = "PERSON"
+    address_line_1 = var.contact_address
+    city         = var.contact_city
+    state        = var.contact_state
+    country_code = var.contact_country
+    zip_code     = var.contact_zip
+    phone_number = var.contact_phone
+    email        = var.contact_email
+  }
+
+  tech_contact {
+    first_name   = var.contact_first_name
+    last_name    = var.contact_last_name
+    contact_type = "PERSON"
+    address_line_1 = var.contact_address
+    city         = var.contact_city
+    state        = var.contact_state
+    country_code = var.contact_country
+    zip_code     = var.contact_zip
+    phone_number = var.contact_phone
+    email        = var.contact_email
+  }
+}
+
+
 resource "aws_route53_zone" "main" {
   name = var.domain_name
 }

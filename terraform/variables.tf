@@ -33,11 +33,70 @@ variable "desired_count" {
 
 variable "domain_name" {
   description = "The domain name for the application"
-  default     = "text18449410220anything.com"
+  default     = "text18449410220anything-cyware.com"
 }
 
 variable "log_retention_in_days" {
   description = "Number of days to retain logs in CloudWatch"
   default     = 5
+}
+
+variable "domain_name" {
+  description = "The domain to register"
+  type        = string
+}
+
+variable "contact_first_name" {
+  description = "The contact's first name"
+  type        = string
+  default     = "Thomas"
+}
+
+variable "contact_last_name" {
+  description = "The contact's last name"
+  type        = string
+  default     = "Zwinger"
+}
+
+variable "contact_address" {
+  description = "The contact's address"
+  type        = string
+  default     = "405 Main St, Apt 303"
+}
+
+variable "contact_city" {
+  description = "The contact's city"
+  type        = string
+  default     = "Red Wing"
+}
+
+variable "contact_state" {
+  description = "The contact's state"
+  type        = string
+  default     = "MN"
+}
+
+variable "contact_country" {
+  description = "The contact's country code"
+  type        = string
+  default     = "US"
+}
+
+variable "contact_zip" {
+  description = "The contact's ZIP code"
+  type        = string
+  default     = "55066"
+}
+
+variable "contact_phone" {
+  description = "The contact's phone number"
+  type        = string
+  default     = "+19526864444"
+}
+
+variable "contact_email" {
+  description = "The contact's email"
+  type        = string
+  default     = "zwingthomas@gmail.com"
 }
 
