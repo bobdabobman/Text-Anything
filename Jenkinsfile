@@ -66,7 +66,19 @@ pipeline {
                 }
             }
         }
-        // Done by terraform?
+        
+        stage('Deploy to ECS') {
+            steps {
+                script {
+                    // Force new deployment using the latest task definition
+                    sh """
+                    aws ecs update-service --cluster ${ECS_CLUSTER_NAME} \
+                    --service ${ECS_SERVICE_NAME} \
+                    --force-new-deployment
+                    """
+                }
+            }
+        }
 
         // stage('Deploy to ECS') {
         //     steps {
