@@ -26,8 +26,8 @@ variable "subnet_configs" {
     cidr = string
   }))
   default = {
-    "public-subnet-1" = { az = "us-east-1a", cidr = "10.0.1.0/24" }
-    "public-subnet-2" = { az = "us-east-1b", cidr = "10.0.2.0/24" }
+    "public-subnet-1" = { az = "us-east-1a", cidr = "10.0.3.0/24" }
+    "public-subnet-2" = { az = "us-east-1b", cidr = "10.0.4.0/24" }
   }
 }
 
