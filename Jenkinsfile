@@ -24,7 +24,7 @@ pipeline {
                     echo "Building Docker Image: ${ECR_REPO_URI}:${env.BUILD_NUMBER}"
                     try {
                         sh """
-                        docker build -t ${ECR_REPO_URI}:${env.BUILD_NUMBER} .
+                        docker build -t ${ECR_REPO_URI}:${env.BUILD_NUMBER} ./src
                         """
                         echo "Docker Image built successfully."
                     } catch (Exception e) {
