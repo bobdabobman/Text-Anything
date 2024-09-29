@@ -20,18 +20,25 @@ data "aws_availability_zones" "available" {
   state = "available"
 }
 
-resource "aws_subnet" "public_subnet_1" {
-  vpc_id            = aws_vpc.main.id
-  cidr_block        = "10.0.1.0/24"
-  availability_zone = "us-east-1a"
-  map_public_ip_on_launch = true
+variable "subnet_configs" {
+  type = map(any)
+  default = {
+    "subnet-1" = { az = "us-east-1a", cidr = "10.0.1.0/24" }
+    "subnet-2" = { az = "us-east-1b", cidr = "10.0.2.0/24" }
+  }
 }
 
-resource "aws_subnet" "public_subnet_2" {
+resource "aws_subnet" "public_subnets" {
+  for_each = var.subnet_configs
+
   vpc_id            = aws_vpc.main.id
-  cidr_block        = "10.0.2.0/24"
-  availability_zone = "us-east-1b"  # Should be in a different region for HA
+  cidr_block        = each.value["cidr"]
+  availability_zone = each.value["az"]
   map_public_ip_on_launch = true
+
+  tags = {
+    Name = "${each.key}-public"
+  }
 }
 
 resource "aws_route_table" "public" {
@@ -48,7 +55,8 @@ resource "aws_route" "public_internet_access" {
   gateway_id             = aws_internet_gateway.igw.id
 }
 
-resource "aws_route_table_association" "public_subnet" {
-  subnet_id      = aws_subnet.public.id
+resource "aws_route_table_association" "public_subnets" {
+  for_each      = { for subnet in aws_subnet.public_subnets : subnet.id => subnet }
+  subnet_id     = each.value.id
   route_table_id = aws_route_table.public.id
 }
