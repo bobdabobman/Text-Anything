@@ -65,90 +65,101 @@ pipeline {
                 }
             }
         }
-
-        stage('Deploy to ECS') {
+        stage('Terraform Destroy') {
             steps {
-                script {
-                    // Register a new task definition with the new image
-                    def taskDefinition = sh(
-                        script: """
-                        aws ecs register-task-definition \
-                            --family hello-world-task \
-                            --task-role-arn ${ECS_TASK_ROLE_ARN} \
-                            --execution-role-arn ${ECS_TASK_EXECUTION_ROLE_ARN} \
-                            --network-mode awsvpc \
-                            --requires-compatibilities FARGATE \
-                            --cpu "256" \
-                            --memory "512" \
-                            --container-definitions '[
-                                {
-                                    "name": "app",
-                                    "image": "${ECR_REPO_URI}:${env.BUILD_NUMBER}",
-                                    "essential": true,
-                                    "portMappings": [
-                                        {
-                                            "containerPort": 5000,
-                                            "protocol": "tcp"
-                                        }
-                                    ],
-                                    "environment": [
-                                        {
-                                            "name": "twilio_auth_token",
-                                            "value": "${twilio_auth_token}"
-                                        }
-                                    ],
-                                    "logConfiguration": {
-                                        "logDriver": "awslogs",
-                                        "options": {
-                                            "awslogs-group": "/ecs/hello-world-app",
-                                            "awslogs-region": "${AWS_DEFAULT_REGION}",
-                                            "awslogs-stream-prefix": "ecs"
-                                        }
-                                    }
-                                }
-                            ]'
-                        """,
-                        returnStdout: true
-                    ).trim()
+                dir('terraform') {
+                     sh '''
+                        terraform init
+                        terraform destroy -auto-approve"
+                        '''
+                }
+            }
+        }
+
+
+        // stage('Deploy to ECS') {
+        //     steps {
+        //         script {
+        //             // Register a new task definition with the new image
+        //             def taskDefinition = sh(
+        //                 script: """
+        //                 aws ecs register-task-definition \
+        //                     --family hello-world-task \
+        //                     --task-role-arn ${ECS_TASK_ROLE_ARN} \
+        //                     --execution-role-arn ${ECS_TASK_EXECUTION_ROLE_ARN} \
+        //                     --network-mode awsvpc \
+        //                     --requires-compatibilities FARGATE \
+        //                     --cpu "256" \
+        //                     --memory "512" \
+        //                     --container-definitions '[
+        //                         {
+        //                             "name": "app",
+        //                             "image": "${ECR_REPO_URI}:${env.BUILD_NUMBER}",
+        //                             "essential": true,
+        //                             "portMappings": [
+        //                                 {
+        //                                     "containerPort": 5000,
+        //                                     "protocol": "tcp"
+        //                                 }
+        //                             ],
+        //                             "environment": [
+        //                                 {
+        //                                     "name": "twilio_auth_token",
+        //                                     "value": "${twilio_auth_token}"
+        //                                 }
+        //                             ],
+        //                             "logConfiguration": {
+        //                                 "logDriver": "awslogs",
+        //                                 "options": {
+        //                                     "awslogs-group": "/ecs/hello-world-app",
+        //                                     "awslogs-region": "${AWS_DEFAULT_REGION}",
+        //                                     "awslogs-stream-prefix": "ecs"
+        //                                 }
+        //                             }
+        //                         }
+        //                     ]'
+        //                 """,
+        //                 returnStdout: true
+        //             ).trim()
                     
-                    // Extract task definition ARN
-                    def taskDefArn = readJSON(text: taskDefinition).taskDefinition.taskDefinitionArn
+        //             // Extract task definition ARN
+        //             def taskDefArn = readJSON(text: taskDefinition).taskDefinition.taskDefinitionArn
 
-                    // Update ECS service to use the new task definition
-                    sh """
-                    aws ecs update-service \
-                        --cluster ${ECS_CLUSTER_NAME} \
-                        --service ${ECS_SERVICE_NAME} \
-                        --task-definition ${taskDefArn} \
-                        --force-new-deployment
-                    """
-                }
-            }
-        }
-        // Verification will fail till Route 53 is up
-        stage('Verification') {
-            steps {
-                script {
-                    // Wait for the service to stabilize
-                    sh "aws ecs wait services-stable --cluster ${ECS_CLUSTER_NAME} --services ${ECS_SERVICE_NAME}"
+        //             // Update ECS service to use the new task definition
+        //             sh """
+        //             aws ecs update-service \
+        //                 --cluster ${ECS_CLUSTER_NAME} \
+        //                 --service ${ECS_SERVICE_NAME} \
+        //                 --task-definition ${taskDefArn} \
+        //                 --force-new-deployment
+        //             """
+        //         }
+        //     }
+        // }
+        // // Verification will fail till Route 53 is up
+        // stage('Verification') {
+        //     steps {
+        //         script {
+        //             // Wait for the service to stabilize
+        //             sh "aws ecs wait services-stable --cluster ${ECS_CLUSTER_NAME} --services ${ECS_SERVICE_NAME}"
 
-                    // Wait additional time if necessary
-                    sleep(time: 30, unit: 'SECONDS')
+        //             // Wait additional time if necessary
+        //             sleep(time: 30, unit: 'SECONDS')
 
-                    // Check HTTP status code
-                    def http_status = sh(
-                        script: "curl -s -o /dev/null -w '%{http_code}' ${APPLICATION_URL}",
-                        returnStdout: true
-                    ).trim()
+        //             // Check HTTP status code
+        //             def http_status = sh(
+        //                 script: "curl -s -o /dev/null -w '%{http_code}' ${APPLICATION_URL}",
+        //                 returnStdout: true
+        //             ).trim()
 
-                    if (http_status == '200') {
-                        echo 'HTTP status code is 200.'
-                    } else {
-                        error "Deployment verification failed. HTTP status code: ${http_status}"
-                    }
-                }
-            }
-        }
+        //             if (http_status == '200') {
+        //                 echo 'HTTP status code is 200.'
+        //             } else {
+        //                 error "Deployment verification failed. HTTP status code: ${http_status}"
+        //             }
+        //         }
+        //     }
+        // }
     }
 
     post {
