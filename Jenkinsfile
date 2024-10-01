@@ -54,17 +54,53 @@ pipeline {
                 }
             }
         }
-        stage('Terraform Init and Apply') {
+        // stage('Terraform Init and Apply') {
+        //     steps {
+        //         dir('terraform') {
+        //              sh '''
+        //                 terraform init
+        //                 terraform apply -auto-approve \
+        //                     -var="twilio_auth_token=${twilio_auth_token}"
+        //                 '''
+        //         }
+        //     }
+        // }
+
+        // Clean up ECS resources before terraform destroy
+        stage('Cleanup ECS Resources') {
             steps {
-                dir('terraform') {
-                     sh '''
-                        terraform init
-                        terraform apply -auto-approve \
-                            -var="twilio_auth_token=${twilio_auth_token}"
-                        '''
+                script {
+                    echo "Cleaning up ECS services and tasks"
+                    
+                    // Deregister the ECS service
+                    sh """
+                    aws ecs update-service \
+                        --cluster ${ECS_CLUSTER_NAME} \
+                        --service ${ECS_SERVICE_NAME} \
+                        --desired-count 0
+                    """
+                    
+                    // Wait for service to scale down tasks
+                    sh """
+                    aws ecs wait services-stable --cluster ${ECS_CLUSTER_NAME} --services ${ECS_SERVICE_NAME}
+                    """
+                    
+                    // Delete ECS service
+                    sh """
+                    aws ecs delete-service \
+                        --cluster ${ECS_CLUSTER_NAME} \
+                        --service ${ECS_SERVICE_NAME} \
+                        --force
+                    """
+                    
+                    // Delete ECS cluster (if no other services or tasks are running)
+                    sh """
+                    aws ecs delete-cluster --cluster ${ECS_CLUSTER_NAME}
+                    """
                 }
             }
         }
+
         stage('Terraform Destroy') {
             steps {
                 dir('terraform') {
