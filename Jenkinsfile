@@ -67,39 +67,39 @@ pipeline {
         // }
 
         // Clean up ECS resources before terraform destroy
-        stage('Cleanup ECS Resources') {
-            steps {
-                script {
-                    echo "Cleaning up ECS services and tasks"
+        // stage('Cleanup ECS Resources') {
+        //     steps {
+        //         script {
+        //             echo "Cleaning up ECS services and tasks"
                     
-                    // Deregister the ECS service
-                    sh """
-                    aws ecs update-service \
-                        --cluster ${ECS_CLUSTER_NAME} \
-                        --service ${ECS_SERVICE_NAME} \
-                        --desired-count 0
-                    """
+        //             // Deregister the ECS service
+        //             sh """
+        //             aws ecs update-service \
+        //                 --cluster ${ECS_CLUSTER_NAME} \
+        //                 --service ${ECS_SERVICE_NAME} \
+        //                 --desired-count 0
+        //             """
                     
-                    // Wait for service to scale down tasks
-                    sh """
-                    aws ecs wait services-stable --cluster ${ECS_CLUSTER_NAME} --services ${ECS_SERVICE_NAME}
-                    """
+        //             // Wait for service to scale down tasks
+        //             sh """
+        //             aws ecs wait services-stable --cluster ${ECS_CLUSTER_NAME} --services ${ECS_SERVICE_NAME}
+        //             """
                     
-                    // Delete ECS service
-                    sh """
-                    aws ecs delete-service \
-                        --cluster ${ECS_CLUSTER_NAME} \
-                        --service ${ECS_SERVICE_NAME} \
-                        --force
-                    """
+        //             // Delete ECS service
+        //             sh """
+        //             aws ecs delete-service \
+        //                 --cluster ${ECS_CLUSTER_NAME} \
+        //                 --service ${ECS_SERVICE_NAME} \
+        //                 --force
+        //             """
                     
-                    // Delete ECS cluster (if no other services or tasks are running)
-                    sh """
-                    aws ecs delete-cluster --cluster ${ECS_CLUSTER_NAME}
-                    """
-                }
-            }
-        }
+        //             // Delete ECS cluster (if no other services or tasks are running)
+        //             sh """
+        //             aws ecs delete-cluster --cluster ${ECS_CLUSTER_NAME}
+        //             """
+        //         }
+        //     }
+        // }
 
         stage('Terraform Destroy') {
             steps {
