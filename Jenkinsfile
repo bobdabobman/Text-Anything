@@ -70,7 +70,8 @@ pipeline {
                 dir('terraform') {
                      sh '''
                         terraform init
-                        terraform destroy -auto-approve
+                        terraform destroy -auto-approve \
+                            -var="twilio_auth_token=${twilio_auth_token}
                         '''
                 }
             }
